@@ -1,23 +1,20 @@
 /**
- * @const The api url string without base value.
- */
-const baseUrl = "https://api.exchangeratesapi.io/latest?base=";
-/**
- * Fetch currency data from the api.
- * @param {base} arg Base value for currency.
+ * Fetch data from the api.
  * @param {url} arg Api url string with default value.
  */
-export const fetchRequest = (base = "USD", url = baseUrl) => {
-	return fetch(`${url}${base}`)
+export const fetchRequest = (url) => {
+	return fetch(url)
 		.then(function(response) {
 			if (!response.ok) {
-				throw Error(response.statusText);
+				const err = new Error("HTTP status code: " + response.status);
+				err.response = response;
+				err.status = response.status;
+				throw err;
 			}
 			return response.json();
 		})
 		.catch(function(error) {
-			return {
-				error: error
-			};
+			const errorMessage = error.toString();
+			return {error: errorMessage};
 		});
 };

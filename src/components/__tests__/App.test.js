@@ -5,22 +5,20 @@ import { shallow } from "enzyme";
 function createTestProps(props) {
 	return {
 		// common props
-		getInitialData: jest.fn(),
+		handleSetBaseCurrency: jest.fn(),
 		// allow to override common props
 		...props
 	};
 }
 
 describe("rendering", () => {
-	describe("<App />", () => {
-		let props;
-		let wrapper;
-		beforeEach(() => {
-			props = createTestProps();
-			wrapper = shallow(<App {...props} />);
+	beforeEach(() => {
+
+	});
+	describe("initial state", () => {
+		it("should have default baseCurrency state {string} USD", () => {
+
 		});
-		it("should render a <div />", () => {
-			expect(wrapper.find("div").length).toEqual(1);
-		});
+		it("should have default convertedCurrency state {string} JPY", () => {});
 	});
 });

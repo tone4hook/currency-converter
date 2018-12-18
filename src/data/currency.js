@@ -1,7 +1,7 @@
 export const currency = {
 	BGN: {
 		name: "Bulgaria, Leva",
-		symbol: "BGN"
+		symbol: "&#1083;&#1074;"
 	},
 	CAD: {
 		name: "Canada, Dollars",

@@ -8,7 +8,18 @@
 		"dev": "webpack --mode development",
 		"build": "webpack --mode production",
 		"test": "jest",
-		"test:watch": "jest --watch"
+		"test:watch": "jest --watch",
+		"test:helpers": "jest -- helpers.test.js",
+		"test:shared": "jest -- shared.test.js",
+		"test:rates": "jest -- setRates.test.js",
+		"test:baseAmount": "jest -- setBaseAmount.test.js",
+		"test:convertedAmount": "jest -- setConvertedAmount.test.js",
+		"test:baseCurrency": "jest -- setBaseCurrency.test.js",
+		"test:convertedCurrency": "jest -- setConvertedCurrency.test.js",
+		"test:currentRate": "jest -- setCurrentRate.test.js",
+		"test:date": "jest -- setDate.test.js",
+		"test:error": "jest -- setErrorMessage.test.js",
+		"test:app" : "jest -- App.test.js"
 	},
 	"keywords": [
 		"pwa"
