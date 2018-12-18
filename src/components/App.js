@@ -14,7 +14,7 @@ export class App extends Component {
 		baseAmount: 0,
 		convertedCurrency: "JPY",
 		convertedAmount: 0,
-		rates: 0,
+		rates: null,
 		currentRate: 0
 	};
 
