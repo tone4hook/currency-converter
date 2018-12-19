@@ -4,7 +4,7 @@ import LoadingBar from "react-redux-loading-bar";
 import { getCurrencyData } from "../actions/shared";
 import { setBaseCurrency } from "../actions/setBaseCurrency";
 import { setErrorMessage } from "../actions/setErrorMessage";
-import { checkCurrencyString } from "../utils/helpers";
+import { checkCurrencyString, isUndefined } from "../utils/helpers";
 
 export class App extends Component {
 	// initial state
@@ -32,17 +32,32 @@ export class App extends Component {
 	 * and set state if new
 	 */
 	componentDidUpdate(prevProps) {
-		const { date, baseCurrency } = this.props;
+		const { date, baseCurrency, rates, errorMessage } = this.props;
 		switch (true) {
 			case date !== prevProps.date:
+				console.log("date changed");
 				this.setState({
 					date: date
 				});
 				break;
+
 			case baseCurrency !== prevProps.baseCurrency:
+				console.log("baseCurrency changed");
 				this.setState({
 					baseCurrency: baseCurrency
 				});
+				break;
+
+			case rates !== prevProps.rates:
+				console.log("rates changed");
+				this.setState({
+					rates: rates
+				});
+				break;
+
+			case errorMessage !== prevProps.errorMessage:
+				// maybe call for a modal here
+				console.log(errorMessage.title);
 				break;
 		}
 	}
@@ -93,14 +108,12 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-function mapStateToProps({ date, loadingBar }) {
+function mapStateToProps({ date, loadingBar, rates, errorMessage }) {
 	return {
-		date:
-			typeof date.currencyDate !== "undefined" ? date.currencyDate : null,
-		isLoaded:
-			typeof loadingBar.default !== "undefined"
-				? loadingBar.default
-				: null
+		date: isUndefined(date.currencyDate) ? null : date.currencyDate,
+		isLoaded: isUndefined(loadingBar.default) ? null : loadingBar.default,
+		rates: isUndefined(rates) ? null : rates,
+		errorMessage: isUndefined(errorMessage) ? null : errorMessage
 	};
 }
 

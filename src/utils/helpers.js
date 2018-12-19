@@ -12,3 +12,5 @@ export const checkCurrencyString = str => {
 	}
 	return isCurrencyString;
 };
+
+export const isUndefined = item => typeof item === "undefined";
