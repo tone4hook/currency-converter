@@ -7,6 +7,13 @@ class CurrencyCard extends Component {
 		amountValue: ""
 	};
 
+	componentDidMount() {
+		this.setState({
+			currencyValue: this.props.currency,
+			amountValue: this.props.amount
+		});
+	}
+
 	/**
 	 * check if props property values change
 	 * and set state if new
@@ -19,7 +26,7 @@ class CurrencyCard extends Component {
 		}
 		if (this.props.amount !== prevProps.amount) {
 			this.setState({
-				amountValue: this.props.amount.toFixed(2)
+				amountValue: this.props.amount
 			});
 		}
 	}
@@ -30,11 +37,8 @@ class CurrencyCard extends Component {
 	 * then sets state and calls setCurrency()
 	 */
 	handleCurrencyChange(event) {
-		const { setCurrency } = this.props;
-		this.setState({
-			currencyValue: event.target.value
-		});
-		setCurrency(event.target.value);
+		const { setCurrency, isBase } = this.props;
+		setCurrency(isBase, event.target.value);
 	}
 
 	/**
@@ -44,10 +48,11 @@ class CurrencyCard extends Component {
 	 */
 	handleAmountChange(event) {
 		const { setAmount } = this.props;
+		const amount = event.target.value ? event.target.value : "";
 		this.setState({
-			amountValue: event.target.value
+			amountValue: amount
 		});
-		setAmount(event.target.value);
+		setAmount(amount);
 	}
 
 	render() {
@@ -56,10 +61,6 @@ class CurrencyCard extends Component {
 
 		// state properties
 		const { currencyValue, amountValue } = this.state;
-
-		// if rates is not loadeded
-		if (rates === null || typeof rates === "undefined")
-			return <p>loading...</p>;
 
 		// once rates is loaded
 		return (
@@ -71,7 +72,7 @@ class CurrencyCard extends Component {
 				>
 					{Object.keys(rates).map(item => (
 						<option key={item} value={item}>
-							{rates[item].type}
+							{rates[item].name}
 						</option>
 					))}
 				</select>

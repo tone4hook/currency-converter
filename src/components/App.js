@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import LoadingBar from "react-redux-loading-bar";
+import Header from "./Header";
+import CurrencyCard from "./CurrencyCard";
+import SwitchButton from "./SwitchButton";
 import { getCurrencyData } from "../actions/shared";
 import { setBaseCurrency } from "../actions/setBaseCurrency";
 import { setConvertedCurrency } from "../actions/setConvertedCurrency";
@@ -28,7 +31,9 @@ export class App extends Component {
 	 */
 	componentDidMount() {
 		const { baseCurrency } = this.state;
-		this.getData(baseCurrency);
+		if (checkCurrencyString(baseCurrency)) {
+			this.getData();
+		} else console.log("currency string error");
 	}
 
 	/**
@@ -36,82 +41,44 @@ export class App extends Component {
 	 * and set state if new
 	 */
 	componentDidUpdate(prevProps) {
-
 		const {
 			date,
 			baseCurrency,
-			baseAmount,
 			convertedCurrency,
+			baseAmount,
 			convertedAmount,
 			rates,
-			currentRate,
-			errorMessage
+			currentRate
 		} = this.props;
 
 		switch (true) {
 			case date !== prevProps.date:
-				console.log("date changed");
-				this.setState({
-					date: date
-				});
+				console.log("setState: date");
+				this.setState({ date: date });
 				break;
-
 			case baseCurrency !== prevProps.baseCurrency:
-				console.log("baseCurrency changed");
-				if (checkCurrencyString(baseCurrency)) {
-					this.setState(
-						{ baseCurrency: baseCurrency },
-						this.getData(baseCurrency)
-					);
-				} else {
-					console.log("call erorr handler");
-				}
+				console.log("setState: baseCurrency");
+				this.setState({ baseCurrency: baseCurrency }, this.getData);
 				break;
-
-			case baseAmount !== prevProps.baseAmount:
-				console.log("baseAmount changed");
-				this.setState(
-					{ baseAmount: baseAmount },
-					this.setConverted()
-				);
-				break;
-
 			case convertedCurrency !== prevProps.convertedCurrency:
-				console.log("convertedCurrency changed");
-				if (checkCurrencyString(convertedCurrency)) {
-					this.setState(
-						{ convertedCurrency: convertedCurrency },
-						this.setRate(convertedCurrency)
-					);
-				} else {
-					console.log("convertedCurrency: call erorr handler");
-				}
+				console.log("setState: convertedCurrency");
+				this.setState({ convertedCurrency: convertedCurrency }, this.setRate);
 				break;
-
+			case baseAmount !== prevProps.baseAmount:
+				console.log("setState: baseAmount");
+				this.setState({ baseAmount: baseAmount }, this.setConverted);
+				break;
 			case convertedAmount !== prevProps.convertedAmount:
-				console.log("convertedAmount changed");
-				this.setState({
-					convertedAmount: convertedAmount
-				});
+				console.log("setState: convertedAmount");
+				this.setState({ convertedAmount: convertedAmount });
 				break;
-
-			case currentRate !== prevProps.currentRate:
-				console.log("currentRate changed");
-				this.setState({
-					currentRate: currentRate
-				});
-				break;
-
 			case rates !== prevProps.rates:
-				console.log("rates changed");
-				this.setState({
-					rates: rates
-				});
+				console.log("setState: rates");
+				this.setState({ rates: rates }, this.setRate);
 				break;
-
-			case errorMessage !== prevProps.errorMessage:
-				// maybe call for a modal here
-				console.log(errorMessage.title);
+			case currentRate !== prevProps.currentRate:
+				console.log("setState: currentRate");
+				this.setState({ currentRate: currentRate }, this.setConverted);
 				break;
 		}
 	}
@@ -122,17 +89,28 @@ export class App extends Component {
 	 * if base currency code {string} is valid
 	 * else set and handle invalid currency code {string}
 	 */
-	getData(base) {
+	getData() {
+		const { baseCurrency } = this.state;
+		const { handleGetCurrencyData } = this.props;
+		handleGetCurrencyData(baseCurrency);
+	}
+
+	/**
+	 * set currency
+	 * @param {isBase} arg Base currency flag.
+	 * @param {currency} currency code
+	 * set the currency if {currency} is valid
+	 */
+	setCurrency(isBase, currency) {
 		const {
 			handleSetBaseCurrency,
-			handleGetCurrencyData,
-			handleSetErrorMessage
+			handleSetConvertedCurrency
 		} = this.props;
-		if (checkCurrencyString(base)) {
-			handleSetBaseCurrency(base);
-			handleGetCurrencyData(base);
-		} else handleSetErrorMessage("currency");
-		// handle the error with a modal or something...
+		if (checkCurrencyString(currency)) {
+			if (isBase) {
+				handleSetBaseCurrency(currency);
+			} else handleSetConvertedCurrency(currency);
+		} else console.log("call error method");
 	}
 
 	/**
@@ -142,9 +120,11 @@ export class App extends Component {
 	 * and then set converted amount
 	 */
 	setBase(amount) {
-		const { baseAmount, handleSetBaseAmount } = this.state;
-		if (baseAmount !== amount) {
-			handleSetBaseAmount(amount);
+		const { baseAmount } = this.state;
+		const { handleSetBaseAmount } = this.props;
+		const num = amount ? parseFloat(amount) : 0;
+		if (baseAmount !== num) {
+			handleSetBaseAmount(num);
 		}
 	}
 
@@ -154,13 +134,10 @@ export class App extends Component {
 	 * based on current rate
 	 */
 	setConverted() {
-		const {
-			baseAmount,
-			currentRate,
-			handleSetConvertedAmount
-		} = this.state;
-		const convertedAmount = baseAmount * currentRate;
-		handleSetConvertedAmount(convertedAmount);
+		const { baseAmount, convertedAmount, currentRate } = this.state;
+		const { handleSetConvertedAmount } = this.props;
+		const amount = baseAmount * currentRate;
+		if (amount !== convertedAmount) handleSetConvertedAmount(amount);
 	}
 
 	/**
@@ -168,18 +145,10 @@ export class App extends Component {
 	 * @param {rate} Rate of converted
 	 * currency compared to base currency
 	 */
-	setRate(rate) {
-		const {
-			baseAmount,
-			currentRate,
-			handleSetCurrentRate,
-			handleSetConvertedAmount,
-			rates
-		} = this.state;
-		const newRate = rates[rate].rate;
-		const convertedAmount = newRate * baseAmount;
-		handleSetConvertedAmount(convertedAmount);
-		handleSetCurrentRate(newRate);
+	setRate() {
+		const { convertedCurrency, rates } = this.state;
+		const { handleSetCurrentRate } = this.props;
+		handleSetCurrentRate(rates[convertedCurrency].rate);
 	}
 
 	/**
@@ -189,22 +158,49 @@ export class App extends Component {
 	 */
 	handleConvertedAmountChange(amount) {
 		const { baseAmount, currentRate } = this.state;
-		if (baseAmount !== amount) {
-			const newBaseAmount = amount / currentRate;
-			this.setState({
-				convertedAmount: amount
-			});
-			this.setBase(newBaseAmount);
-		}
+		const newAmount = amount / currentRate;
+		this.setBase(newAmount);
 	}
 
 	render() {
-		const { date } = this.state;
+		const {
+			date,
+			baseAmount,
+			baseCurrency,
+			convertedAmount,
+			convertedCurrency,
+			rates
+		} = this.state;
 		return (
 			<div className="wrapper">
 				<LoadingBar />
 				<div className="container">
 					<div className="row">{date}</div>
+					{rates !== null ? (
+						<div className="row">
+							<CurrencyCard
+								amount={baseAmount}
+								currency={baseCurrency}
+								rates={rates}
+								setCurrency={this.setCurrency.bind(this)}
+								setAmount={this.setBase.bind(this)}
+								isBase={true}
+							/>
+							<SwitchButton />
+							<CurrencyCard
+								amount={convertedAmount}
+								currency={convertedCurrency}
+								rates={rates}
+								setCurrency={this.setCurrency.bind(this)}
+								setAmount={this.handleConvertedAmountChange.bind(
+									this
+								)}
+								isBase={false}
+							/>
+						</div>
+					) : (
+						<div>Loading...</div>
+					)}
 				</div>
 			</div>
 		);
@@ -237,10 +233,29 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-function mapStateToProps({ date, loadingBar, rates, errorMessage }) {
+function mapStateToProps({
+	date,
+	loadingBar,
+	baseAmount,
+	baseCurrency,
+	convertedAmount,
+	convertedCurrency,
+	currentRate,
+	rates,
+	errorMessage
+}) {
 	return {
 		date: isUndefined(date.currencyDate) ? null : date.currencyDate,
 		isLoaded: isUndefined(loadingBar.default) ? null : loadingBar.default,
+		baseCurrency: isUndefined(baseCurrency.code) ? null : baseCurrency.code,
+		baseAmount: isUndefined(baseAmount.amount) ? null : baseAmount.amount,
+		convertedCurrency: isUndefined(convertedCurrency.code)
+			? null
+			: convertedCurrency.code,
+		convertedAmount: isUndefined(convertedAmount.amount)
+			? null
+			: convertedAmount.amount,
+		currentRate: isUndefined(currentRate.rate) ? null : currentRate.rate,
 		rates: isUndefined(rates) ? null : rates,
 		errorMessage: isUndefined(errorMessage) ? null : errorMessage
 	};
