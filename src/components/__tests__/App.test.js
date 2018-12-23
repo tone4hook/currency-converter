@@ -6,18 +6,30 @@ function createTestProps(props) {
 	return {
 		isLoaded: 0,
 		date: "Mon Dec 17 2018",
+		baseCurrency: "USD",
+		convertedCurrency: "JPY",
+		baseAmount: 0,
+		convertedAmount: 0,
+		rates: {},
+		currentRate: 0,
+		errorMessage: {},
 		// dispatch action handlers
 		handleSetBaseCurrency: jest.fn(),
 		handleGetCurrencyData: jest.fn(),
 		handleSetErrorMessage: jest.fn(),
+		handleSetConvertedCurrency: jest.fn(),
+		handleSetBaseAmount: jest.fn(),
+		handleSetConvertedAmount: jest.fn(),
+		handleSetCurrentRate: jest.fn(),
 		// allow to override common props
 		...props
 	};
 }
 
+let wrapper, instance;
+const createWrapper = props => shallow(<App {...props} />);
+
 describe("rendering", () => {
-	let wrapper;
-	const createWrapper = props => shallow(<App {...props} />)
 	beforeEach(() => {
 		const props = createTestProps();
 		wrapper = createWrapper(props);
@@ -55,6 +67,23 @@ describe("rendering", () => {
 		});
 		it("should render div with class row", () => {
 			expect(wrapper.find(".row").length).toEqual(1);
+		});
+	});
+});
+
+describe("lifecycle", () => {
+	beforeEach(() => {
+		const props = createTestProps();
+		wrapper = createWrapper(props);
+	});
+	describe("componentDidMount", () => {
+		beforeEach(() => {
+			instance = wrapper.instance();
+		});
+		it("should call getData method", () => {
+			const spy = jest.spyOn(instance, "getData");
+			instance.componentDidMount();
+			expect(instance.getData).toHaveBeenCalled();
 		});
 	});
 });

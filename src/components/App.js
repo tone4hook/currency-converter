@@ -38,7 +38,7 @@ export class App extends Component {
 
 	/**
 	 * check if props property values change
-	 * and set state if new
+	 * and set state if value is different
 	 */
 	componentDidUpdate(prevProps) {
 		const {
@@ -62,7 +62,10 @@ export class App extends Component {
 				break;
 			case convertedCurrency !== prevProps.convertedCurrency:
 				console.log("setState: convertedCurrency");
-				this.setState({ convertedCurrency: convertedCurrency }, this.setRate);
+				this.setState(
+					{ convertedCurrency: convertedCurrency },
+					this.setRate
+				);
 				break;
 			case baseAmount !== prevProps.baseAmount:
 				console.log("setState: baseAmount");
