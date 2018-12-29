@@ -19,7 +19,9 @@
 		"test:currentRate": "jest -- setCurrentRate.test.js",
 		"test:date": "jest -- setDate.test.js",
 		"test:error": "jest -- setErrorMessage.test.js",
-		"test:app" : "jest -- App.test.js"
+		"test:app" : "jest -- App.test.js",
+		"test:card" : "jest -- CurrencyCard.test.js",
+		"test:button" : "jest -- SwitchButton.test.js"
 	},
 	"keywords": [
 		"pwa"

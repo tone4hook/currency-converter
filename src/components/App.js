@@ -151,7 +151,13 @@ export class App extends Component {
 	setRate() {
 		const { convertedCurrency, rates } = this.state;
 		const { handleSetCurrentRate } = this.props;
-		handleSetCurrentRate(rates[convertedCurrency].rate);
+		if (rates) {
+			if (!isUndefined(rates[convertedCurrency])) {
+				if (!isUndefined(rates[convertedCurrency].rate)) {
+					handleSetCurrentRate(rates[convertedCurrency].rate);
+				} else console.log("setRate error: needs handler.");
+			} else console.log("setRate error: needs handler.");
+		} else console.log("setRate error: needs handler.");
 	}
 
 	/**
@@ -162,7 +168,21 @@ export class App extends Component {
 	handleConvertedAmountChange(amount) {
 		const { baseAmount, currentRate } = this.state;
 		const newAmount = amount / currentRate;
-		this.setBase(newAmount);
+		if (newAmount !== amount) this.setBase(newAmount);
+	}
+
+	/**
+	 * switches base and converted
+	 * currency values
+	 * calls setCurrency
+	 * sets state for converted currency
+	 */
+	handleSwitchCurrency(base, converted) {
+		this.setCurrency(true, converted);
+		this.setCurrency(false, base);
+		this.setState({
+			convertedCurrency: base
+		});
 	}
 
 	render() {
@@ -174,6 +194,7 @@ export class App extends Component {
 			convertedCurrency,
 			rates
 		} = this.state;
+
 		return (
 			<div className="wrapper">
 				<LoadingBar />
@@ -189,7 +210,15 @@ export class App extends Component {
 								setAmount={this.setBase.bind(this)}
 								isBase={true}
 							/>
-							<SwitchButton />
+							<SwitchButton
+								base={baseCurrency}
+								converted={convertedCurrency}
+								switchCurrency={this.handleSwitchCurrency.bind(
+									this,
+									baseCurrency,
+									convertedCurrency
+								)}
+							/>
 							<CurrencyCard
 								amount={convertedAmount}
 								currency={convertedCurrency}

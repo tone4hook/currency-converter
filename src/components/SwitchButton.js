@@ -2,7 +2,12 @@ import React from "react";
 
 const SwitchButton = props => (
 	<div className="column">
-		<button className="button">Switch</button>
+		<button
+			className="button"
+			onClick={props.switchCurrency}
+		>
+			Switch
+		</button>
 	</div>
 );
 

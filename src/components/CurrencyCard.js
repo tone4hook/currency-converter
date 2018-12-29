@@ -26,7 +26,7 @@ class CurrencyCard extends Component {
 		}
 		if (this.props.amount !== prevProps.amount) {
 			this.setState({
-				amountValue: this.props.amount
+				amountValue: Math.round(this.props.amount * 100) / 100
 			});
 		}
 	}
@@ -49,9 +49,6 @@ class CurrencyCard extends Component {
 	handleAmountChange(event) {
 		const { setAmount } = this.props;
 		const amount = event.target.value ? event.target.value : "";
-		this.setState({
-			amountValue: amount
-		});
 		setAmount(amount);
 	}
 
@@ -67,6 +64,7 @@ class CurrencyCard extends Component {
 			<div className="column">
 				<div>Currency Card</div>
 				<select
+					name="currencyCode"
 					value={currencyValue}
 					onChange={this.handleCurrencyChange.bind(this)}
 				>
@@ -78,6 +76,7 @@ class CurrencyCard extends Component {
 				</select>
 				<input
 					type="number"
+					name="currencyAmount"
 					value={amountValue}
 					onChange={this.handleAmountChange.bind(this)}
 				/>
