@@ -198,8 +198,14 @@ export class App extends Component {
 		return (
 			<div className="wrapper">
 				<LoadingBar />
+				<Header />
 				<div className="container">
-					<div className="row">{date}</div>
+					<div className="row py-1">
+						<div className="column py-1">
+							<strong>Exchange Date: </strong>
+							{date}
+						</div>
+					</div>
 					{rates !== null ? (
 						<div className="row">
 							<CurrencyCard

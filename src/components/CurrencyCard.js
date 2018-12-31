@@ -54,32 +54,48 @@ class CurrencyCard extends Component {
 
 	render() {
 		// props properties
-		const { currency, amount, rates } = this.props;
+		const { currency, amount, rates, isBase } = this.props;
 
 		// state properties
 		const { currencyValue, amountValue } = this.state;
 
+		// element property
+		const propertyName = isBase ? "base" : "converted";
+
 		// once rates is loaded
 		return (
-			<div className="column">
-				<div>Currency Card</div>
-				<select
-					name="currencyCode"
-					value={currencyValue}
-					onChange={this.handleCurrencyChange.bind(this)}
-				>
-					{Object.keys(rates).map(item => (
-						<option key={item} value={item}>
-							{rates[item].name}
-						</option>
-					))}
-				</select>
-				<input
-					type="number"
-					name="currencyAmount"
-					value={amountValue}
-					onChange={this.handleAmountChange.bind(this)}
-				/>
+			<div className="column column-40 card">
+				<div className="card-body">
+					<label htmlFor={propertyName}>
+						{isBase ? "Base Currency" : "Converted Currency"}
+					</label>
+					<select
+						id={propertyName}
+						className="text-md"
+						name={propertyName}
+						value={currencyValue}
+						onChange={this.handleCurrencyChange.bind(this)}
+					>
+						{Object.keys(rates).map(item => (
+							<option
+								key={item}
+								value={item}
+								dangerouslySetInnerHTML={{
+									__html: `${rates[item].name} ${
+										rates[item].symbol
+									}`
+								}}
+							/>
+						))}
+					</select>
+					<input
+						className="text-md"
+						type="number"
+						name={`${propertyName}-amount`}
+						value={amountValue}
+						onChange={this.handleAmountChange.bind(this)}
+					/>
+				</div>
 			</div>
 		);
 	}

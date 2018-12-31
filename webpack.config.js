@@ -70,13 +70,6 @@ module.exports = {
 			    options: {
 			        name: 'icons/[name].[ext]'
 			    }
-			},
-			{
-				test: /\.(png|svg|jpg|gif|svg)$/,
-				loader: 'file-loader',
-			    options: {
-			        name: 'assets/[name].[ext]'
-			    }
 			}
         ],
     },

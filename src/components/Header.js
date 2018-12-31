@@ -2,7 +2,9 @@ import React from "react";
 
 const Header = props => (
 	<header className="header">
-		<h4>Currency Converter</h4>
+		<div className="brand py-1">
+			 Currency Converter
+		</div>
 	</header>
 );
 
