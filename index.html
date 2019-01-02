@@ -7,6 +7,7 @@
 		<title>Currency Converter</title>
 		<meta name="description" content="A simple currency converter progressive web app built with React and Redux.">
 		<meta name="author" content="tone4hook">
+		<link href="dist/style.css" rel="stylesheet">
 	</head>
 	<body>
 		<div id="root"></div>
@@ -15,11 +16,11 @@
 			if ("serviceWorker" in navigator) {
 				// Use the window load event to keep the page load performant
 				window.addEventListener("load", () => {
-					navigator.serviceWorker.register("/sw.js");
+					navigator.serviceWorker.register("dist/sw.js");
 				});
 			}
 		</script>
-		<script src="./dist/"></script>
+		<script type="text/javascript" src="dist/app.js"></script>
 		<noscript>
 			<div class="container">
 				<h3>This App Requires JavaScript</h3>
