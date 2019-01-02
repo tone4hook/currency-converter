@@ -1,5 +1,5 @@
 # Currency Converter
-A simple currency converter progressive web app built with React, Redux, and Redux Thunk that uses an open source currency API for live data.
+A simple currency converter web app built with React, Redux, and Redux Thunk that uses an open source currency API for live data.
 
 ## Getting Started
 
@@ -9,10 +9,13 @@ Using Terminal or Command Prompt navigate to the *currency-converter* directory.
 * *npm update --save-dev*  to update all devDependencies
 * *npm start* to run local server
 * *npm run dev* to build the project in development mode (compiles in dist directory)
-* *npm run build* to build the project in production mode (compiles in dist directory)
+* *npm build* to build the project in production mode (compiles in dist directory)
 * *npm test* to run Jest tests
 * *npm test:watch* to use Jest to watch
 
+## To-Do
+
+* Add progressive enhancements (score 100 on Lighthouse PWA audit)
 
 ### Prerequisites
 
