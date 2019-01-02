@@ -9,7 +9,7 @@ Using Terminal or Command Prompt navigate to the *currency-converter* directory.
 * *npm update --save-dev*  to update all devDependencies
 * *npm start* to run local server
 * *npm run dev* to build the project in development mode (compiles in dist directory)
-* *npm build* to build the project in production mode (compiles in dist directory)
+* *npm run build* to build the project in production mode (compiles in dist directory)
 * *npm test* to run Jest tests
 * *npm test:watch* to use Jest to watch
 
