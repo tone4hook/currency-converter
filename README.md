@@ -15,10 +15,6 @@ Using Terminal or Command Prompt navigate to the *currency-converter* directory.
 * *npm test* to run Jest tests
 * *npm test:watch* to use Jest to watch
 
-## To-Do
-
-* Add progressive enhancements (score 100 on Lighthouse PWA audit)
-
 ### Prerequisites
 
 * Node.js (with NPM)
@@ -38,3 +34,7 @@ Using Terminal or Command Prompt navigate to the *currency-converter* directory.
 ## License
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details
+
+## TODO
+
+* Add progressive enhancements (score 100 on Lighthouse PWA audit)
