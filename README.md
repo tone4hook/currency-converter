@@ -1,6 +1,8 @@
 # Currency Converter
 A simple currency converter web app built with React, Redux, and Redux Thunk that uses an open source currency API for live data.
 
+[See it here](https://tone4hook.github.io/currency-converter/)
+
 ## Getting Started
 
 Download, clone, or fork the repo.
