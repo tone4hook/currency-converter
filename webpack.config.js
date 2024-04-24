@@ -4,8 +4,9 @@ const { VueLoaderPlugin } = require('vue-loader');
 const Dotenv = require('dotenv-webpack');
 const packageJson = require('./package.json');
 
-module.exports = () => {
-  const isProduction = process.env.NODE_ENV === 'production';
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
+
   const publicPath = isProduction
     ? 'https://tone4hook.github.io/currency-converter/'
     : 'http://localhost:8081/';
