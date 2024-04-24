@@ -4,61 +4,68 @@ const { VueLoaderPlugin } = require('vue-loader');
 const Dotenv = require('dotenv-webpack');
 const packageJson = require('./package.json');
 
-module.exports = () => ({
-  output: {
-    publicPath: 'https://tone4hook.github.io/currency-converter/',
-  },
+module.exports = () => {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const publicPath = isProduction
+    ? 'https://tone4hook.github.io/currency-converter/'
+    : 'http://localhost:8081/';
 
-  resolve: {
-    extensions: ['.tsx', '.ts', '.vue', '.jsx', '.js', '.json'],
-  },
+  return {
+    output: {
+      publicPath,
+    },
 
-  devServer: {
-    port: 8081,
-    historyApiFallback: true,
-  },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.vue', '.jsx', '.js', '.json'],
+    },
 
-  module: {
-    rules: [
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-      },
-      {
-        test: /\.tsx?$/,
-        use: [
-          'babel-loader',
-          {
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: true,
-              appendTsSuffixTo: ['\\.vue$'],
-              happyPackMode: true,
+    devServer: {
+      port: 8081,
+      historyApiFallback: true,
+    },
+
+    module: {
+      rules: [
+        {
+          test: /\.vue$/,
+          loader: 'vue-loader',
+        },
+        {
+          test: /\.tsx?$/,
+          use: [
+            'babel-loader',
+            {
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true,
+                appendTsSuffixTo: ['\\.vue$'],
+                happyPackMode: true,
+              },
             },
-          },
-        ],
-      },
-      {
-        test: /\.(css|s[ac]ss)$/i,
-        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
-      },
-    ],
-  }, // Add a comma here
+          ],
+        },
+        {
+          test: /\.(css|s[ac]ss)$/i,
+          use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
+        },
+      ],
+    }, // Add a comma here
 
-  plugins: [
-    new VueLoaderPlugin(),
-    new ModuleFederationPlugin({
-      name: 'currency_converter',
-      filename: 'remoteEntry.js',
-      remotes: {},
-      exposes: {
-        './Currency': './src/pages/Currency.vue',
-      },
-      shared: packageJson.dependencies,
-    }),
-    new HtmlWebPackPlugin({
-      template: './src/index.html',
-    }),
-    new Dotenv(),
-  ],
-});
+    plugins: [
+      new VueLoaderPlugin(),
+      new ModuleFederationPlugin({
+        name: 'currency_converter',
+        filename: 'remoteEntry.js',
+        remotes: {},
+        exposes: {
+          './Currency': './src/pages/Currency.vue',
+        },
+        shared: packageJson.dependencies,
+      }),
+      new HtmlWebPackPlugin({
+        template: './src/index.html',
+      }),
+      new Dotenv(),
+    ],
+  };
+};
