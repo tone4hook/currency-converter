@@ -1,6 +1,7 @@
 {
   "name": "currency-converter",
   "version": "1.0.0",
+  "homepage": "https://tone4hook.github.io/currency-converter/",
   "scripts": {
     "build": "webpack --mode production",
     "build:dev": "webpack --mode development",
