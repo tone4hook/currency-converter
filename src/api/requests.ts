@@ -1,23 +1,5 @@
 import axios from 'axios';
-
-interface ConversionRates {
-  [key: string]: number;
-}
-
-export interface ConversionResult {
-  date: string;
-  [currency: string]: ConversionRates | string;
-}
-
-// Define a type for the currency data
-export type CurrencyData = {
-  [key: string]: number;
-};
-
-// Define a type for the currency list
-export type CurrencyList = {
-  [key: string]: string;
-};
+import { ConversionRates, ConversionResult, CurrencyList } from '@/api/types';
 
 // Async function to get the currency data
 export async function getCurrencyData(

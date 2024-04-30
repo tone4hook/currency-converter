@@ -1,87 +1,72 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import {
-  getCurrencyData,
-  getCurrencyList,
-  convertCurrency,
-  ConversionResult,
-  CurrencyList,
-} from '../api/requests';
-import useErrorStore from './error';
+import { getCurrencyList, convertCurrency } from '@/api/requests';
+import { CurrencyStore, ErrorStore } from '@/stores/types';
+import { ConversionResult, CurrencyList } from '@/api/types';
 
-const useCurrencyStore = defineStore('currency', () => {
-  const errorStore = useErrorStore();
+export const useCurrencyStore = defineStore<'currency', CurrencyStore>(
+  'currency',
+  () => {
+    const errorStore = ref<ErrorStore | undefined>(undefined);
 
-  const isLoading = ref(false);
-  const currencyList = ref<CurrencyList | undefined>(undefined);
-  const conversionResult = ref<number | undefined>(undefined);
-  const currencyData = ref<ConversionResult | undefined>(undefined);
+    const isLoading = ref(false);
+    const currencyList = ref<CurrencyList | undefined>(undefined);
+    const conversionResult = ref<number | undefined>(undefined);
+    const currencyData = ref<ConversionResult | undefined>(undefined);
 
-  function handleError(error: any) {
-    const errorMessage =
-      error.response?.data?.message || error.message || 'An error occurred';
-    errorStore.setError(true, errorMessage);
-  }
-
-  async function fetchCurrencyData(
-    baseCurrency: string,
-    date: string = 'latest',
-  ) {
-    isLoading.value = true;
-    try {
-      currencyData.value = await getCurrencyData(baseCurrency, date);
-    } catch (error) {
-      handleError(error);
-    } finally {
-      isLoading.value = false;
+    async function handleError(error: any) {
+      const { useErrorStore } = await import('currency_vista/ErrorStore');
+      errorStore.value = useErrorStore();
+      const errorMessage =
+        error.response?.data?.message || error.message || 'An error occurred';
+      console.log('From: @remote | calling @host setError action.');
+      errorStore.value?.setError(true, errorMessage);
     }
-  }
 
-  async function fetchCurrencyList() {
-    isLoading.value = true;
-    try {
-      const response = await getCurrencyList();
-      if (!response) {
-        throw new Error('Failed to fetch currency list');
+    async function fetchCurrencyList() {
+      console.log('From: @remote | fetchCurrencyList action called.');
+      isLoading.value = true;
+      try {
+        const response = await getCurrencyList();
+        if (!response) {
+          throw new Error('Failed to fetch currency list');
+        }
+        currencyList.value = Object.fromEntries(
+          Object.entries(response).filter(([key, value]) => value),
+        ) as { [s: string]: string };
+      } catch (error) {
+        handleError(error);
+      } finally {
+        isLoading.value = false;
       }
-      currencyList.value = Object.fromEntries(
-        Object.entries(response).filter(([key, value]) => value),
-      ) as { [s: string]: string };
-    } catch (error) {
-      handleError(error);
-    } finally {
-      isLoading.value = false;
     }
-  }
 
-  async function fetchConversionResult(
-    fromCurrency: string,
-    toCurrency: string,
-    amount: number,
-  ) {
-    isLoading.value = true;
-    try {
-      conversionResult.value = await convertCurrency(
-        fromCurrency,
-        toCurrency,
-        amount,
-      );
-    } catch (error) {
-      handleError(error);
-    } finally {
-      isLoading.value = false;
+    async function fetchConversionResult(
+      fromCurrency: string,
+      toCurrency: string,
+      amount: number,
+    ) {
+      isLoading.value = true;
+      try {
+        conversionResult.value = await convertCurrency(
+          fromCurrency,
+          toCurrency,
+          amount,
+        );
+      } catch (error) {
+        handleError(error);
+      } finally {
+        isLoading.value = false;
+      }
     }
-  }
 
-  return {
-    isLoading,
-    currencyData,
-    currencyList,
-    conversionResult,
-    fetchCurrencyData,
-    fetchCurrencyList,
-    fetchConversionResult,
-  };
-});
-
-export default useCurrencyStore;
+    return {
+      isLoading,
+      currencyData,
+      currencyList,
+      conversionResult,
+      fetchCurrencyList,
+      fetchConversionResult,
+    };
+  },
+);
