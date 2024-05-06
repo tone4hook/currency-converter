@@ -87,7 +87,21 @@ module.exports = (env, argv) => {
           './Currency': './src/pages/Currency.vue',
           './CurrencyStore': './src/stores/currency',
         },
-        shared: packageJson.dependencies,
+        shared: {
+          vue: {
+            singleton: true,
+            requiredVersion: packageJson.dependencies.vue,
+          },
+          'vue-router': {
+            singleton: true,
+            requiredVersion: packageJson.dependencies['vue-router'],
+          },
+          pinia: {
+            singleton: true,
+            requiredVersion: packageJson.dependencies.pinia,
+          },
+          bootstrap: packageJson.dependencies.bootstrap,
+        },
       }),
       new HtmlWebPackPlugin({
         template: './src/index.html',
